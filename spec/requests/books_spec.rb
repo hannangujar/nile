@@ -12,14 +12,25 @@ describe 'Books API', type: :request do
             expect(JSON.parse(response.body).size).to eq(2)
         end
     end
-
+ 
     describe 'POST /books' do
        it 'create a new book' do
         expect{
-         post '/api/v1/books', params: { book: {title: 'The ocean', author: 'Asad Jafery'} }
+         post '/api/v1/books', params:{
+           book: {title: 'The ocean'},
+           author:{first_name: 'Asad', last_name: 'Jaffery' , age: 28} 
+        }
         }.to change{ Book.count }.from(0).to(1)
-
         expect(response).to have_http_status(:created)
+        expect(Author.count).to eq(1)
+        expect(JSON.parse(response.body)).to eq{
+            {
+                "id": 1,
+                "title": "The Ocean",
+                "author_name": "Asad Jaffery",
+                "author_age" => 48 
+            }
+        }
        end
     end
 
